@@ -1,7 +1,11 @@
 package dk.sdu.mmmi.cbse.common.data;
 
+import dk.sdu.mmmi.cbse.common.data.entityparts.EntityPart;
+
 import java.io.Serializable;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Entity implements Serializable {
 
@@ -11,7 +15,26 @@ public class Entity implements Serializable {
     private double x;
     private double y;
     private double rotation;
-    private float radius;
+    private boolean isDestroyed;
+    private int speedMult;
+    private int size;
+    private boolean isHit;
+    private Map<Class, EntityPart> parts;
+
+
+    public Entity() {
+        parts = new ConcurrentHashMap<>();
+    }
+
+    public void add(EntityPart part) {
+        parts.put(part.getClass(), part);
+    }
+
+    public void remove(Class partClass) {parts.remove(partClass);
+    }
+    public <E extends EntityPart> E getPart(Class partClass) {
+        return (E) parts.get(partClass);
+    }
             
 
     public String getID() {
@@ -53,11 +76,35 @@ public class Entity implements Serializable {
         return rotation;
     }
 
-    public void setRadius(float radius) {
-        this.radius = radius;
+    public boolean isDestroyed() {
+        return isDestroyed;
     }
-        
-    public float getRadius() {
-        return this.radius;
+
+    public void setDestroyed(boolean destroyed) {
+        isDestroyed = destroyed;
+    }
+
+    public int getSpeedMult() {
+        return speedMult;
+    }
+
+    public void setSpeedMult(int speedMult) {
+        this.speedMult = speedMult;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
+    public void setHit(boolean hit) {
+        isHit = hit;
+    }
+
+    public boolean isHit() {
+        return isHit;
     }
 }

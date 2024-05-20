@@ -1,0 +1,28 @@
+@startuml
+
+[Common]
+[Player]
+[Bullet]
+[Enemy]
+[Collision]
+[Game]
+[CommonBullet]
+[Asteroid]
+
+[Player]-(0-[Bullet] : "BulletSPI"
+[Enemy]-(0-[Bullet] : "BulletSPI"
+[Game]-(0-[Player] : "IEntityProcessingService"
+[Game]-(0-[Enemy] : "IEntityProcessingService"
+[Game]-(0-[Bullet] : "IEntityProcessingService"
+[Game]-(0-[Collision] : "IPostEntityProcessingService"
+[Game]-(0-[Asteroid] : "IEntityProcessingService"
+
+[Bullet]..>[CommonBullet]
+
+
+[Common]<..[Player]
+[Common]<..[Enemy]
+[Common]<..[Collision]
+
+
+@enduml

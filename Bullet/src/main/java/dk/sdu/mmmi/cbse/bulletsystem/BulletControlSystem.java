@@ -5,31 +5,44 @@ import dk.sdu.mmmi.cbse.common.bullet.BulletSPI;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
+import dk.sdu.mmmi.cbse.common.data.entityparts.OutOfBoundsPart;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 
 public class BulletControlSystem implements IEntityProcessingService, BulletSPI {
 
     @Override
     public void process(GameData gameData, World world) {
-
         for (Entity bullet : world.getEntities(Bullet.class)) {
-            double changeX = Math.cos(Math.toRadians(bullet.getRotation()));
-            double changeY = Math.sin(Math.toRadians(bullet.getRotation()));
-            bullet.setX(bullet.getX() + changeX * 3);
-            bullet.setY(bullet.getY() + changeY * 3);
+            OutOfBoundsPart outOfBoundsPart = bullet.getPart(OutOfBoundsPart.class);
+
+            outOfBoundsPart.process(gameData, bullet);
+            if (outOfBoundsPart.isOutOfBounds()){
+                System.out.println("is out of bounds");
+                bullet.setDestroyed(true);
+            }
+            double changeX = Math.cos(Math.toRadians(bullet.getRotation())) * bullet.getSpeedMult();
+            double changeY = Math.sin(Math.toRadians(bullet.getRotation())) * bullet.getSpeedMult();
+            bullet.setX(bullet.getX() + changeX);
+            bullet.setY(bullet.getY() + changeY);
+            if (bullet.isHit()){
+                bullet.setDestroyed(true);
+            }
         }
     }
 
     @Override
     public Entity createBullet(Entity shooter, GameData gameData) {
-        Entity bullet = new Bullet();
-        bullet.setPolygonCoordinates(1, -1, 1, 1, -1, 1, -1, -1);
-        double changeX = Math.cos(Math.toRadians(shooter.getRotation()));
-        double changeY = Math.sin(Math.toRadians(shooter.getRotation()));
-        bullet.setX(shooter.getX() + changeX * 10);
-        bullet.setY(shooter.getY() + changeY * 10);
-        bullet.setRotation(shooter.getRotation());
-        bullet.setRadius(1);
-        return bullet;
+        Entity Bullet = new Bullet(shooter);
+        Bullet.setX(shooter.getX());
+        Bullet.setY(shooter.getY());
+        Bullet.setRotation(shooter.getRotation());
+        Bullet.setPolygonCoordinates(-3,-1, 3,-1, 3,1, -3,1);
+        Bullet.setSpeedMult(5);
+        Bullet.add(new OutOfBoundsPart());
+        return Bullet;
     }
+
+    private void setShape(Entity entity) {
+    }
+
 }

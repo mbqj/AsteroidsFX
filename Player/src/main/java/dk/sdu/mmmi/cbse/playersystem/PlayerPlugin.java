@@ -3,6 +3,7 @@ package dk.sdu.mmmi.cbse.playersystem;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
+import dk.sdu.mmmi.cbse.common.data.entityparts.OutOfBoundsPart;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 public class PlayerPlugin implements IGamePluginService {
 
@@ -25,7 +26,8 @@ public class PlayerPlugin implements IGamePluginService {
         playerShip.setPolygonCoordinates(-5,-5,10,0,-5,5);
         playerShip.setX(gameData.getDisplayHeight()/2);
         playerShip.setY(gameData.getDisplayWidth()/2);
-        playerShip.setRadius(8);
+        playerShip.setSize(5);
+        playerShip.add(new OutOfBoundsPart());
         return playerShip;
     }
 
