@@ -1,0 +1,3 @@
+module SplitPackage {
+    requires Common;
+}
