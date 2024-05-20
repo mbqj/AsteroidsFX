@@ -1,0 +1,10 @@
+@startuml
+Actor User
+
+User -> core: start
+core -> JavaServiceLoader: load
+JavaServiceLoader --> core: SPI
+core -> Entity: create
+Entity --> core: Entity
+
+@enduml
