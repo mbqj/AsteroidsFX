@@ -1,0 +1,35 @@
+@startuml
+class Main {
+    - entities: List<Entity>
+    + start() void
+    + update() void
+}
+interface IEntityProcessingService {
+}
+interface IEntityPluginService {
+}
+class Entity {
+    - x : float
+    - y : float
+    - size : float
+    - shape : Shape
+}
+class Player {
+}
+class Enemy {
+}
+class Bullet {
+}
+class Asteroid {
+}
+
+Asteroid -up-|> Entity
+Player -up-|> Entity
+Enemy -up-|> Entity
+Bullet -up-|> Entity
+
+Entity .up.|> IEntityProcessingService
+Entity .up.|> IEntityPluginService
+Main .down.> IEntityProcessingService
+Main .down.> IEntityPluginService
+@enduml
