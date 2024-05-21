@@ -8,6 +8,10 @@ import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -79,6 +83,8 @@ public class Game {
                 gameData.getKeys().setKey(GameKeys.SPACE, false);
             }
 
+
+
         });
 
         // Lookup all Game Plugins using ServiceLoader
@@ -97,6 +103,18 @@ public class Game {
         window.setTitle("ASTEROIDS");
         window.show();
 
+        String url = String.format("http://localhost:8080/reset");
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .build();
+
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            String responseBody = response.body();
+        } catch (Exception e) {
+            System.out.println(e.getStackTrace());
+        }
     }
 
     private void render() {
@@ -123,9 +141,28 @@ public class Game {
                 gameWindow.getChildren().remove(polygons.get(entity));
                 polygons.remove(entity);
                 world.removeEntity(entity);
+                score++;
             }
         }
 
+        String url = String.format("http://localhost:8080/score?point=%d", score);
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .build();
+
+        int scoreValue = -1;
+
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            String responseBody = response.body();
+
+            scoreValue = Integer.parseInt(responseBody);
+        } catch (Exception e) {
+            System.out.println(e.getStackTrace());
+        }
+
+        score = 0;
 
         for (Entity entity : world.getEntities()) {
             if (polygons.get(entity)==null){
@@ -144,6 +181,8 @@ public class Game {
             postEntityProcessorService.process(gameData, world);
         }
         entityAmount = world.getEntities().size();
+
+
     }
 
     private void draw() {
